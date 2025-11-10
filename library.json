@@ -1,0 +1,70 @@
+{
+	"name": "actor-RuckusLEDMatrix",
+	"version": "1.0.0",
+	"description": "Controls a RoboRuckus LED matrix display",
+	"keywords": "Fabrica-IO, actor, roboruckus, display, led",
+	"repository":
+	{
+	  "type": "git",
+	  "url": "https://github.com/RoboRuckus/actor-RuckusLEDMatrix.git"
+	},
+	"authors":
+	[
+	  {
+		"name": "Sam Groveman",
+		"email": "SamGroveman@outlook.com",
+		"url": "https://RoboRuckus.com"
+	  }
+	],
+	"dependencies": {
+		"NeoPixelsController": "https://github.com/FabricaIO/actor-NeoPixelsController",
+		"RoboRuckusDevice": "https://github.com/RoboRuckus/util-RoboRuckusDevice"
+	  },
+	"license": "GPLv3",
+	"homepage": "https://RoboRuckus.com",
+	"frameworks": "arduino",
+	"platforms": "*",
+	"fabricaio" : {
+		"name": "RuckusMatrix",
+		"type": 1,
+		"category": "display",
+		"libname": "RuckusLEDMatrix",
+		"includes": ["RuckusLEDMatrix"],
+		"description": "Controls a RoboRuckus LED matrix display",
+		"constructor":
+		[
+			[			
+				{
+					"name": "Pin",
+					"type": "int",
+					"description": "Pin to use",
+					"default": ""
+				},
+				{
+					"name": "LED_X",
+					"type": "int",
+					"description": "Number of LEDs on X-axis",
+					"default": "5"
+				},
+				{
+					"name": "LED_Y",
+					"type": "int",
+					"description": "Number of LEDs on Y-axis",
+					"default": "5"
+				},
+				{
+					"name": "RGB_Type",
+					"type": "neoPixelType",
+					"description": "Number of LEDs on Y-axis",
+					"default": "NEO_GRB + NEO_KHZ800"
+				},
+				{
+					"name": "configFile",
+					"type": "String",
+					"description": "The name of the config file",
+					"default": "RuckusLEDMatrix.json"
+				}
+			]
+		]
+	}
+  }
