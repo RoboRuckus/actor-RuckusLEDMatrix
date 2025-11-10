@@ -96,6 +96,8 @@ bool RuckusLEDMatrix::setConfig(String config, bool save) {
 			startIndex = commaIndex + 1;
 		}
 		display_config.color[colorCount++] = colorString.substring(startIndex).toInt();
+		display_config.Zigzag = doc["Zigzag"].as<bool>();
+		display_config.Mirror = doc["Mirror"].as<bool>();
 		eventPayload current = {.event = CUSTOM, .eventType = (int)currentImage};
 		receiveEvent(&current);
 
@@ -155,6 +157,7 @@ void RuckusLEDMatrix::showImage(images image, bool replace) {
 		currentImage = image;
 	}
 	uint8_t* dat = image_maps5x5[(int)image];
+	// There's probably a better way to handle RGB and RGBW than duplicating the for loop
 	if (display_config.color.size() == 3) {
 		uint8_t matrix[25][3];
 		for (int r = 0; r < display_config.LED_X; r++)
@@ -162,8 +165,16 @@ void RuckusLEDMatrix::showImage(images image, bool replace) {
 			for (int c = 0; c < display_config.LED_Y; c++)
 			{
 				int index = r * display_config.LED_X + display_config.LED_Y - (c + 1);
-				if (bitRead(dat[r], c))
-				{	
+				// The below allows for zigzag displays and display mirroring
+				int matrix_index = c;
+				if (display_config.Zigzag) {
+					if (r%2 == 1 - display_config.Mirror) {
+						matrix_index = (display_config.LED_X - 1) - matrix_index;
+					}
+				} else if (display_config.Mirror) {
+					matrix_index = (display_config.LED_X - 1) - matrix_index;
+				}
+				if (bitRead(dat[r], matrix_index)) {	
 					matrix[index][0] = display_config.color[0];
 					matrix[index][1] = display_config.color[1];
 					matrix[index][2] = display_config.color[2];
@@ -172,6 +183,7 @@ void RuckusLEDMatrix::showImage(images image, bool replace) {
 					matrix[index][1] = 0;
 					matrix[index][2] = 0;
 				}
+				
 			}
 		}
 		writePixels(matrix);
@@ -182,8 +194,15 @@ void RuckusLEDMatrix::showImage(images image, bool replace) {
 			for (int c = 0; c < display_config.LED_Y; c++)
 			{
 				int index = r * display_config.LED_X + display_config.LED_Y - (c + 1);
-				if (bitRead(dat[r], c))
-				{	
+				int matrix_index = c;
+				if (display_config.Zigzag) {
+					if (r%2 == 1 - display_config.Mirror) {
+						matrix_index = (display_config.LED_X - 1) - matrix_index;
+					}
+				} else if (display_config.Mirror) {
+					matrix_index = (display_config.LED_X - 1) - matrix_index;
+				}
+				if (bitRead(dat[r], matrix_index))	{	
 					matrix[index][0] = display_config.color[0];
 					matrix[index][1] = display_config.color[1];
 					matrix[index][2] = display_config.color[2];
@@ -238,5 +257,7 @@ JsonDocument RuckusLEDMatrix::addAdditionalConfig() {
 		color += String(display_config.color[j]);
 	}
 	doc["color"] = color;
+	doc["Zigzag"] = display_config.Zigzag;
+	doc["Mirror"] = display_config.Mirror;
 	return doc;
 }

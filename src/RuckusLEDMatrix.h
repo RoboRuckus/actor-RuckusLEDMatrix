@@ -53,7 +53,13 @@ protected:
 		int LED_X;
 		
 		/// @brief The number of LEDs on the Y-axis
-		int LED_Y;		
+		int LED_Y;
+
+		/// @brief Sets whether the leds zigzag on the display
+		bool Zigzag = false;
+
+		/// @brief Sets whether to mirror the display
+		bool Mirror = false;
 	} display_config;
 
 	/// @brief Stores the index for the showIP acton
